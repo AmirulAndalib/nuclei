@@ -22,7 +22,7 @@ When this flag is provided, nuclei will print the list of all helper functions a
 
 - `-svd` flag
 
-When this flag is provided, nuclei will print all `variables` pre and post execution of a request for a template. This is useful to understand what variables are available for a template and what values they have.
+When this flag is provided, nuclei will print all `variables` pre- and post-execution of a request for a template. This is useful to understand what variables are available for a template and what values they have.
 
 - `-elog = errors.txt` flag
 
@@ -34,9 +34,14 @@ When this flag is provided, nuclei will log all errors to the file specified. Th
 
 Nuclei was built with some environment variables in mind to help with debugging. These environment variables can be set to enable debugging of a particular component/functionality for nuclei.
 
-| Environment Variable   | Description                                              |
-| ---------------------- | -------------------------------------------------------- |
-| `DEBUG=true`           | Enables Printing Stack Traces for all errors             |
-| `SHOW_DSL_ERRORS=true` | Enables Printing DSL Errors (that are hidden by default) |
+| Environment Variable             | Description                                              |
+| -------------------------------- | -------------------------------------------------------- |
+| `DEBUG=true`                     | Enables Printing Stack Traces for all errors             |
+| `SHOW_DSL_ERRORS=true`           | Enables Printing DSL Errors (that are hidden by default) |
+| `HIDE_TEMPLATE_SIG_WARNING=true` | Hides Template Signature Verification Warnings           |
+| `NUCLEI_LOG_ALL=true`            | Log All Events that were skipped in verbose mode         |
+| `NUCLEI_CONFIG_DIR`              | Sets custom configuration directory path                 |
+| `NUCLEI_TEMPLATES_DIR`           | Sets custom nuclei templates directory path              |
+
 
 

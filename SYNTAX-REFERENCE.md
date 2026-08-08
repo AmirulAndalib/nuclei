@@ -74,6 +74,29 @@ info:
 
 <div class="dd">
 
+<code>flow</code>  <i>string</i>
+
+</div>
+<div class="dt">
+
+description: |
+   Flow contains the execution flow for the template.
+ examples:
+   - flow: |
+ 		for region in regions {
+		    http(0)
+		 }
+		 for vpc in vpcs {
+		    http(1)
+		 }
+
+
+</div>
+
+<hr />
+
+<div class="dd">
+
 <code>requests</code>  <i>[]<a href="#httprequest">http.Request</a></i>
 
 </div>
@@ -124,6 +147,7 @@ description: |
  examples:
    - value: exampleNormalHTTPRequest
  RequestsWithHTTP is placeholder(internal) only, and should not be used instead use RequestsHTTP
+ Deprecated: Use RequestsHTTP instead.
 
 </div>
 
@@ -237,6 +261,7 @@ description: |
  examples:
    - value: exampleNormalNetworkRequest
  RequestsWithTCP is placeholder(internal) only, and should not be used instead use RequestsNetwork
+ Deprecated: Use RequestsNetwork instead.
 
 </div>
 
@@ -296,6 +321,32 @@ WHOIS contains the WHOIS request to make in the template.
 
 <div class="dd">
 
+<code>code</code>  <i>[]<a href="#coderequest">code.Request</a></i>
+
+</div>
+<div class="dt">
+
+Code contains code snippets.
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>javascript</code>  <i>[]<a href="#javascriptrequest">javascript.Request</a></i>
+
+</div>
+<div class="dt">
+
+Javascript contains the javascript request to make in the template.
+
+</div>
+
+<hr />
+
+<div class="dd">
+
 <code>self-contained</code>  <i>bool</i>
 
 </div>
@@ -328,6 +379,7 @@ Stop execution once first match is found
 <div class="dt">
 
 Signature is the request signature method
+WARNING: 'signature' will be deprecated and will be removed in a future release. Prefer using 'code' protocol for writing cloud checks
 
 
 Valid values:
@@ -957,6 +1009,26 @@ Part Definitions:
 - <code>all</code> - HTTP response body + headers
 - <code>cookies_from_response</code> - HTTP response cookies in name:value format
 - <code>headers_from_response</code> - HTTP response headers in name:value format
+- <code>tls_version</code> - TLS version negotiated for the HTTP connection
+- <code>cipher</code> - TLS cipher suite negotiated for the HTTP connection
+- <code>sni</code> - SNI value used in the TLS handshake
+- <code>subject_cn</code> - Leaf certificate subject common name
+- <code>subject_dn</code> - Leaf certificate subject distinguished name
+- <code>subject_an</code> - Leaf certificate subject alternative names
+- <code>subject_org</code> - Leaf certificate subject organization
+- <code>issuer_cn</code> - Leaf certificate issuer common name
+- <code>issuer_dn</code> - Leaf certificate issuer distinguished name
+- <code>issuer_org</code> - Leaf certificate issuer organization
+- <code>serial</code> - Leaf certificate serial number
+- <code>fingerprint_hash</code> - Leaf certificate fingerprint hashes (md5/sha1/sha256)
+- <code>not_before</code> - Leaf certificate not-before timestamp
+- <code>not_after</code> - Leaf certificate not-after timestamp
+- <code>expired</code> - Whether the leaf certificate has expired
+- <code>self_signed</code> - Whether the leaf certificate is self-signed
+- <code>mismatched</code> - Whether the leaf certificate does not match the SNI hostname
+- <code>domains</code> - Deduplicated domains from subject CN and SANs
+- <code>wildcard_certificate</code> - Whether the leaf certificate is a wildcard certificate
+- <code>emails</code> - Email addresses embedded in the leaf certificate
 
 <hr />
 
@@ -1321,6 +1393,32 @@ Fuzzing describes schema to fuzz http requests
 
 <div class="dd">
 
+<code>analyzer</code>  <i><a href="#analyzersanalyzertemplate">analyzers.AnalyzerTemplate</a></i>
+
+</div>
+<div class="dt">
+
+Analyzer is an analyzer to use for matching the response.
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>self-contained</code>  <i>bool</i>
+
+</div>
+<div class="dt">
+
+SelfContained specifies if the request is self-contained.
+
+</div>
+
+<hr />
+
+<div class="dd">
+
 <code>signature</code>  <i><a href="#signaturetypeholder">SignatureTypeHolder</a></i>
 
 </div>
@@ -1339,6 +1437,19 @@ Valid values:
 
 <div class="dd">
 
+<code>skip-secret-file</code>  <i>bool</i>
+
+</div>
+<div class="dt">
+
+SkipSecretFile skips the authentication or authorization configured in the secret file.
+
+</div>
+
+<hr />
+
+<div class="dd">
+
 <code>cookie-reuse</code>  <i>bool</i>
 
 </div>
@@ -1346,6 +1457,19 @@ Valid values:
 
 CookieReuse is an optional setting that enables cookie reuse for
 all requests defined in raw section.
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>disable-cookie</code>  <i>bool</i>
+
+</div>
+<div class="dt">
+
+DisableCookie is an optional setting that disables cookie reuse
 
 </div>
 
@@ -1390,6 +1514,21 @@ This can be used in conjunction with `max-redirects` to control the HTTP request
 Redirects specifies whether only redirects to the same host should be followed by the HTTP Client.
 
 This can be used in conjunction with `max-redirects` to control the HTTP request redirects.
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>protocol-redirects</code>  <i>bool</i>
+
+</div>
+<div class="dt">
+
+ProtocolRedirects specifies whether only redirects within the same protocol should be followed.
+
+When set to true with redirects enabled, cross-protocol redirects (e.g. HTTP to HTTPS) will be blocked.
 
 </div>
 
@@ -1534,6 +1673,45 @@ DisablePathAutomerge disables merging target url path with raw request path
 
 <hr />
 
+<div class="dd">
+
+<code>pre-condition</code>  <i>[]<a href="#matchersmatcher">matchers.Matcher</a></i>
+
+</div>
+<div class="dt">
+
+Fuzz PreCondition is matcher-like field to check if fuzzing should be performed on this request or not
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>pre-condition-operator</code>  <i>string</i>
+
+</div>
+<div class="dt">
+
+FuzzPreConditionOperator is the operator between multiple PreConditions for fuzzing Default is OR
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>global-matchers</code>  <i>bool</i>
+
+</div>
+<div class="dt">
+
+GlobalMatchers marks matchers as static and applies globally to all result events from other templates
+
+</div>
+
+<hr />
+
 
 
 
@@ -1553,6 +1731,8 @@ Appears in:
 - <code><a href="#headlessrequest">headless.Request</a>.attack</code>
 
 - <code><a href="#websocketrequest">websocket.Request</a>.attack</code>
+
+- <code><a href="#javascriptrequest">javascript.Request</a>.attack</code>
 
 
 
@@ -1694,13 +1874,50 @@ Valid values:
 
 Part is the part of request to fuzz.
 
-query fuzzes the query part of url. More parts will be added later.
+
+Valid values:
+
+
+  - <code>query</code>
+
+  - <code>header</code>
+
+  - <code>path</code>
+
+  - <code>body</code>
+
+  - <code>cookie</code>
+
+  - <code>request</code>
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>parts</code>  <i>[]string</i>
+
+</div>
+<div class="dt">
+
+Parts is the list of parts to fuzz. If multiple parts need to be
+defined while excluding some, this should be used instead of singular part.
 
 
 Valid values:
 
 
   - <code>query</code>
+
+  - <code>header</code>
+
+  - <code>path</code>
+
+  - <code>body</code>
+
+  - <code>cookie</code>
+
+  - <code>request</code>
 </div>
 
 <hr />
@@ -1806,26 +2023,102 @@ values:
 
 <div class="dd">
 
-<code>fuzz</code>  <i>[]string</i>
+<code>fuzz</code>  <i><a href="#sliceormapslice">SliceOrMapSlice</a></i>
 
 </div>
 <div class="dt">
 
-Fuzz is the list of payloads to perform substitutions with.
+description: |
+   Fuzz is the list of payloads to perform substitutions with.
+ examples:
+   - name: Examples of fuzz
+     value: >
+       []string{"{{ssrf}}", "{{interactsh-url}}", "example-value"}
+      or
+       x-header: 1
+       x-header: 2
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>replace-regex</code>  <i>string</i>
+
+</div>
+<div class="dt">
+
+replace-regex is regex for regex-replace rule type
+it is only required for replace-regex rule type
+
+</div>
+
+<hr />
 
 
 
-Examples:
 
 
-```yaml
-# Examples of fuzz
-fuzz:
-    - '{{ssrf}}'
-    - '{{interactsh-url}}'
-    - example-value
-```
+## SliceOrMapSlice
 
+Appears in:
+
+
+- <code><a href="#fuzzrule">fuzz.Rule</a>.fuzz</code>
+
+
+
+
+
+
+
+## analyzers.AnalyzerTemplate
+AnalyzerTemplate is the template for the analyzer
+
+Appears in:
+
+
+- <code><a href="#httprequest">http.Request</a>.analyzer</code>
+
+
+
+
+
+<hr />
+
+<div class="dd">
+
+<code>name</code>  <i>string</i>
+
+</div>
+<div class="dt">
+
+Name is the name of the analyzer to use
+
+
+Valid values:
+
+
+  - <code>time_delay</code>
+
+  - <code>xss_context</code>
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>parameters</code>  <i>map[string]interface{}</i>
+
+</div>
+<div class="dt">
+
+Parameters is the parameters for the analyzer
+
+Parameters are different for each analyzer. For example, you can customize
+time_delay analyzer with sleep_duration, time_slope_error_range, etc. Refer
+to the docs for each analyzer to get an idea about parameters.
 
 </div>
 
@@ -1844,6 +2137,459 @@ Appears in:
 - <code><a href="#httprequest">http.Request</a>.signature</code>
 
 
+
+
+
+
+
+## matchers.Matcher
+Matcher is used to match a part in the output from a protocol.
+
+Appears in:
+
+
+- <code><a href="#httprequest">http.Request</a>.pre-condition</code>
+
+
+
+
+
+<hr />
+
+<div class="dd">
+
+<code>type</code>  <i><a href="#matchertypeholder">MatcherTypeHolder</a></i>
+
+</div>
+<div class="dt">
+
+Type is the type of the matcher.
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>condition</code>  <i>string</i>
+
+</div>
+<div class="dt">
+
+Condition is the optional condition between two matcher variables. By default,
+the condition is assumed to be OR.
+
+
+Valid values:
+
+
+  - <code>and</code>
+
+  - <code>or</code>
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>part</code>  <i>string</i>
+
+</div>
+<div class="dt">
+
+Part is the part of the request response to match data from.
+
+Each protocol exposes a lot of different parts which are well
+documented in docs for each request type.
+
+
+
+Examples:
+
+
+```yaml
+part: body
+```
+
+```yaml
+part: raw
+```
+
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>negative</code>  <i>bool</i>
+
+</div>
+<div class="dt">
+
+Negative specifies if the match should be reversed
+It will only match if the condition is not true.
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>name</code>  <i>string</i>
+
+</div>
+<div class="dt">
+
+Name of the matcher. Name should be lowercase and must not contain
+spaces or underscores (_).
+
+
+
+Examples:
+
+
+```yaml
+name: cookie-matcher
+```
+
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>status</code>  <i>[]int</i>
+
+</div>
+<div class="dt">
+
+Status are the acceptable status codes for the response.
+
+
+
+Examples:
+
+
+```yaml
+status:
+    - 200
+    - 302
+```
+
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>size</code>  <i>[]int</i>
+
+</div>
+<div class="dt">
+
+Size is the acceptable size for the response
+
+
+
+Examples:
+
+
+```yaml
+size:
+    - 3029
+    - 2042
+```
+
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>words</code>  <i>[]string</i>
+
+</div>
+<div class="dt">
+
+Words contains word patterns required to be present in the response part.
+
+
+
+Examples:
+
+
+```yaml
+# Match for Outlook mail protection domain
+words:
+    - mail.protection.outlook.com
+```
+
+```yaml
+# Match for application/json in response headers
+words:
+    - application/json
+```
+
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>regex</code>  <i>[]string</i>
+
+</div>
+<div class="dt">
+
+Regex contains Regular Expression patterns required to be present in the response part.
+
+
+
+Examples:
+
+
+```yaml
+# Match for Linkerd Service via Regex
+regex:
+    - (?mi)^Via\\s*?:.*?linkerd.*$
+```
+
+```yaml
+# Match for Open Redirect via Location header
+regex:
+    - (?m)^(?:Location\\s*?:\\s*?)(?:https?://|//)?(?:[a-zA-Z0-9\\-_\\.@]*)example\\.com.*$
+```
+
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>binary</code>  <i>[]string</i>
+
+</div>
+<div class="dt">
+
+Binary are the binary patterns required to be present in the response part.
+
+
+
+Examples:
+
+
+```yaml
+# Match for Springboot Heapdump Actuator "JAVA PROFILE", "HPROF", "Gunzip magic byte"
+binary:
+    - 4a4156412050524f46494c45
+    - 4850524f46
+    - 1f8b080000000000
+```
+
+```yaml
+# Match for 7zip files
+binary:
+    - 377ABCAF271C
+```
+
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>dsl</code>  <i>[]string</i>
+
+</div>
+<div class="dt">
+
+DSL are the dsl expressions that will be evaluated as part of nuclei matching rules.
+A list of these helper functions are available [here](https://nuclei.projectdiscovery.io/templating-guide/helper-functions/).
+
+
+
+Examples:
+
+
+```yaml
+# DSL Matcher for package.json file
+dsl:
+    - contains(body, 'packages') && contains(tolower(all_headers), 'application/octet-stream') && status_code == 200
+```
+
+```yaml
+# DSL Matcher for missing strict transport security header
+dsl:
+    - '!contains(tolower(all_headers), ''''strict-transport-security'''')'
+```
+
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>xpath</code>  <i>[]string</i>
+
+</div>
+<div class="dt">
+
+XPath are the xpath queries expressions that will be evaluated against the response part.
+
+
+
+Examples:
+
+
+```yaml
+# XPath Matcher to check a title
+xpath:
+    - /html/head/title[contains(text(), 'How to Find XPath')]
+```
+
+```yaml
+# XPath Matcher for finding links with target="_blank"
+xpath:
+    - //a[@target="_blank"]
+```
+
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>encoding</code>  <i>string</i>
+
+</div>
+<div class="dt">
+
+Encoding specifies the encoding for the words field if any.
+
+
+Valid values:
+
+
+  - <code>hex</code>
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>case-insensitive</code>  <i>bool</i>
+
+</div>
+<div class="dt">
+
+CaseInsensitive enables case-insensitive matches. Default is false.
+
+
+Valid values:
+
+
+  - <code>false</code>
+
+  - <code>true</code>
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>match-all</code>  <i>bool</i>
+
+</div>
+<div class="dt">
+
+MatchAll enables matching for all matcher values. Default is false.
+
+
+Valid values:
+
+
+  - <code>false</code>
+
+  - <code>true</code>
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>internal</code>  <i>bool</i>
+
+</div>
+<div class="dt">
+
+description: |
+  Internal when true hides the matcher from output. Default is false.
+ It is meant to be used in multiprotocol / flow templates to create internal matcher condition without printing it in output.
+ or other similar use cases.
+ values:
+   - false
+   - true
+
+</div>
+
+<hr />
+
+
+
+
+
+## MatcherTypeHolder
+MatcherTypeHolder is used to hold internal type of the matcher
+
+Appears in:
+
+
+- <code><a href="#matchersmatcher">matchers.Matcher</a>.type</code>
+
+
+
+
+
+<hr />
+
+<div class="dd">
+
+<code></code>  <i>MatcherType</i>
+
+</div>
+<div class="dt">
+
+
+
+
+Enum Values:
+
+
+  - <code>word</code>
+
+  - <code>regex</code>
+
+  - <code>binary</code>
+
+  - <code>status</code>
+
+  - <code>size</code>
+
+  - <code>dsl</code>
+
+  - <code>xpath</code>
+</div>
+
+<hr />
 
 
 
@@ -1880,6 +2626,7 @@ Part Definitions:
 - <code>host</code> - Host is the input to the template
 - <code>matched</code> - Matched is the input which was matched upon
 - <code>request</code> - Request contains the DNS request in text format
+- <code>duration</code> - Protocol operation duration in seconds
 - <code>type</code> - Type is the type of request made
 - <code>rcode</code> - Rcode field returned for the DNS request
 - <code>question</code> - Question contains the DNS question field
@@ -2068,6 +2815,30 @@ be provided as payload which will be read on run-time.
 
 <div class="dd">
 
+<code>threads</code>  <i>int</i>
+
+</div>
+<div class="dt">
+
+Threads to use when sending iterating over payloads
+
+
+
+Examples:
+
+
+```yaml
+# Send requests using 10 concurrent threads
+threads: 10
+```
+
+
+</div>
+
+<hr />
+
+<div class="dd">
+
 <code>recursion</code>  <i>dns.bool</i>
 
 </div>
@@ -2146,6 +2917,18 @@ Enum Values:
   - <code>TLSA</code>
 
   - <code>ANY</code>
+
+  - <code>SRV</code>
+
+  - <code>RRSIG</code>
+
+  - <code>NSEC</code>
+
+  - <code>DNSKEY</code>
+
+  - <code>NSEC3</code>
+
+  - <code>NSEC3PARAM</code>
 </div>
 
 <hr />
@@ -2319,6 +3102,82 @@ NoRecursive specifies whether to not do recursive checks if folders are provided
 
 <hr />
 
+<div class="dd">
+
+<code>smb-user</code>  <i>string</i>
+
+</div>
+<div class="dt">
+
+SMBUser authenticates to remote SMB shares when the file input is a UNC
+or smb:// path (issue #6142). Guest/anon: empty password.
+
+
+
+Examples:
+
+
+```yaml
+smb-user: auditor
+```
+
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>smb-password</code>  <i>string</i>
+
+</div>
+<div class="dt">
+
+SMBPassword is the password for SMB file targets.
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>smb-domain</code>  <i>string</i>
+
+</div>
+<div class="dt">
+
+SMBDomain is the optional NTLM domain / workgroup.
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>smb-hash</code>  <i>string</i>
+
+</div>
+<div class="dt">
+
+SMBHash enables pass-the-hash (overrides smb-password when set).
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>smb-port</code>  <i>int</i>
+
+</div>
+<div class="dt">
+
+SMBPort overrides the default SMB port (445) for UNC targets.
+
+</div>
+
+<hr />
+
 
 
 
@@ -2357,6 +3216,7 @@ Part Definitions:
 - <code>matched</code> - Matched is the input which was matched upon
 - <code>type</code> - Type is the type of request made
 - <code>request</code> - Network request made from the client
+- <code>duration</code> - Latest measured operation duration in seconds
 - <code>body,all,data</code> - Network response received from server (default)
 - <code>raw</code> - Full Network protocol data
 
@@ -2437,6 +3297,33 @@ be provided as payload which will be read on run-time.
 
 <div class="dd">
 
+<code>threads</code>  <i>int</i>
+
+</div>
+<div class="dt">
+
+Threads specifies number of threads to use sending requests. This enables Connection Pooling.
+
+Connection: Close attribute must not be used in request while using threads flag, otherwise
+pooling will fail and engine will continue to close connections after requests.
+
+
+
+Examples:
+
+
+```yaml
+# Send requests using 10 concurrent threads
+threads: 10
+```
+
+
+</div>
+
+<hr />
+
+<div class="dd">
+
 <code>inputs</code>  <i>[]<a href="#networkinput">network.Input</a></i>
 
 </div>
@@ -2456,8 +3343,8 @@ Inputs contains inputs for the network socket
 <div class="dt">
 
 description: |
-   Port is the port to send network requests to. this acts as default port but is overriden if target/input contains
- non-http(s) ports like 80,8080,8081 etc
+   Port is the port to send network requests to. this acts as default port but is overridden if target/input contains
+ non-http(s) ports like 80,8080,8081 etc. Supports both numeric ports and IANA service names (e.g. ftp, ssh, smtp).
 
 </div>
 
@@ -2522,6 +3409,19 @@ Examples:
 read-all: false
 ```
 
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>stop-at-first-match</code>  <i>bool</i>
+
+</div>
+<div class="dt">
+
+StopAtFirstMatch stops the execution of the requests and template as soon as a match is found.
 
 </div>
 
@@ -2709,6 +3609,7 @@ Part Definitions:
 - <code>matched</code> - Matched is the input which was matched upon
 - <code>type</code> - Type is the type of request made
 - <code>req</code> - Headless request made from the client
+- <code>duration</code> - Latest measured operation duration in seconds
 - <code>resp,body,data</code> - Headless response received from client (default)
 
 <hr />
@@ -2834,6 +3735,19 @@ Fuzzing describes schema to fuzz headless requests
 <div class="dt">
 
 CookieReuse is an optional setting that enables cookie reuse
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>disable-cookie</code>  <i>bool</i>
+
+</div>
+<div class="dt">
+
+DisableCookie is an optional setting that disables cookie reuse
 
 </div>
 
@@ -2968,7 +3882,17 @@ Enum Values:
 
   - <code>files</code>
 
+  - <code>waitdom</code>
+
+  - <code>waitfcp</code>
+
+  - <code>waitfmp</code>
+
+  - <code>waitidle</code>
+
   - <code>waitload</code>
+
+  - <code>waitstable</code>
 
   - <code>getresource</code>
 
@@ -2985,6 +3909,8 @@ Enum Values:
   - <code>setbody</code>
 
   - <code>waitevent</code>
+
+  - <code>dialog</code>
 
   - <code>keyboard</code>
 
@@ -3056,11 +3982,47 @@ Appears in:
 Part Definitions: 
 
 
-- <code>type</code> - Type is the type of request made
-- <code>response</code> - JSON SSL protocol handshake details
-- <code>not_after</code> - Timestamp after which the remote cert expires
+- <code>template-id</code> - ID of the template executed
+- <code>template-info</code> - Info Block of the template executed
+- <code>template-path</code> - Path of the template executed
 - <code>host</code> - Host is the input to the template
+- <code>port</code> - Port is the port of the host
 - <code>matched</code> - Matched is the input which was matched upon
+- <code>type</code> - Type is the type of request made
+- <code>timestamp</code> - Timestamp is the time when the request was made
+- <code>duration</code> - Protocol operation duration in seconds
+- <code>response</code> - JSON SSL protocol handshake details
+- <code>cipher</code> - Cipher is the encryption algorithm used
+- <code>domains</code> - Domains are the list of domain names in the certificate
+- <code>fingerprint_hash</code> - Fingerprint hash is the unique identifier of the certificate
+- <code>ip</code> - IP is the IP address of the server
+- <code>issuer_cn</code> - Issuer CN is the common name of the certificate issuer
+- <code>issuer_dn</code> - Issuer DN is the distinguished name of the certificate issuer
+- <code>issuer_org</code> - Issuer organization is the organization of the certificate issuer
+- <code>not_after</code> - Timestamp after which the remote cert expires
+- <code>not_before</code> - Timestamp before which the certificate is not valid
+- <code>probe_status</code> - Probe status indicates if the probe was successful
+- <code>serial</code> - Serial is the serial number of the certificate
+- <code>sni</code> - SNI is the server name indication used in the handshake
+- <code>subject_an</code> - Subject AN is the list of subject alternative names
+- <code>subject_cn</code> - Subject CN is the common name of the certificate subject
+- <code>subject_dn</code> - Subject DN is the distinguished name of the certificate subject
+- <code>subject_org</code> - Subject organization is the organization of the certificate subject
+- <code>tls_connection</code> - TLS connection is the type of TLS connection used
+- <code>tls_version</code> - TLS version is the version of the TLS protocol used
+
+<hr />
+
+<div class="dd">
+
+<code>id</code>  <i>string</i>
+
+</div>
+<div class="dt">
+
+ID is the optional id of the request
+
+</div>
 
 <hr />
 
@@ -3161,6 +4123,53 @@ description: |
 
 <hr />
 
+<div class="dd">
+
+<code>tls_version_enum</code>  <i>bool</i>
+
+</div>
+<div class="dt">
+
+TLS Versions Enum - false if not specified
+Enumerates supported TLS versions
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>tls_cipher_enum</code>  <i>bool</i>
+
+</div>
+<div class="dt">
+
+TLS Ciphers Enum - false if not specified
+Enumerates supported TLS ciphers
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>tls_cipher_types</code>  <i>[]string</i>
+
+</div>
+<div class="dt">
+
+description: |
+  TLS Cipher types to enumerate
+ values:
+   - "insecure" (default)
+   - "weak"
+   - "secure"
+   - "all"
+
+</div>
+
+<hr />
+
 
 
 
@@ -3181,9 +4190,23 @@ Part Definitions:
 - <code>type</code> - Type is the type of request made
 - <code>success</code> - Success specifies whether websocket connection was successful
 - <code>request</code> - Websocket request made to the server
+- <code>duration</code> - Latest measured operation duration in seconds
 - <code>response</code> - Websocket response received from the server
 - <code>host</code> - Host is the input to the template
 - <code>matched</code> - Matched is the input which was matched upon
+
+<hr />
+
+<div class="dd">
+
+<code>id</code>  <i>string</i>
+
+</div>
+<div class="dt">
+
+ID is the optional id of the request
+
+</div>
 
 <hr />
 
@@ -3342,7 +4365,26 @@ Appears in:
 
 
 
+Part Definitions: 
 
+
+- <code>type</code> - Type is the type of request made
+- <code>host</code> - Host is the input to the template
+- <code>response</code> - WHOIS response data
+- <code>duration</code> - Protocol operation duration in seconds
+
+<hr />
+
+<div class="dd">
+
+<code>id</code>  <i>string</i>
+
+</div>
+<div class="dt">
+
+ID is the optional id of the request
+
+</div>
 
 <hr />
 
@@ -3371,6 +4413,268 @@ description: |
 
  	 If present, specifies the WHOIS server to execute the Request on.
    Otherwise, nil enables bootstrapping
+
+</div>
+
+<hr />
+
+
+
+
+
+## code.Request
+Request is a request for the SSL protocol
+
+Appears in:
+
+
+- <code><a href="#template">Template</a>.code</code>
+
+
+
+Part Definitions: 
+
+
+- <code>type</code> - Type is the type of request made
+- <code>host</code> - Host is the input to the template
+- <code>matched</code> - Matched is the input which was matched upon
+
+<hr />
+
+<div class="dd">
+
+<code>id</code>  <i>string</i>
+
+</div>
+<div class="dt">
+
+ID is the optional id of the request
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>engine</code>  <i>[]string</i>
+
+</div>
+<div class="dt">
+
+Engine type
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>pre-condition</code>  <i>string</i>
+
+</div>
+<div class="dt">
+
+PreCondition is a condition which is evaluated before sending the request.
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>args</code>  <i>[]string</i>
+
+</div>
+<div class="dt">
+
+Engine Arguments
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>pattern</code>  <i>string</i>
+
+</div>
+<div class="dt">
+
+Pattern preferred for file name
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>source</code>  <i>string</i>
+
+</div>
+<div class="dt">
+
+Source File/Snippet
+
+</div>
+
+<hr />
+
+
+
+
+
+## javascript.Request
+Request is a request for the javascript protocol
+
+Appears in:
+
+
+- <code><a href="#template">Template</a>.javascript</code>
+
+
+
+Part Definitions: 
+
+
+- <code>type</code> - Type is the type of request made
+- <code>response</code> - Javascript protocol result response
+- <code>host</code> - Host is the input to the template
+- <code>matched</code> - Matched is the input which was matched upon
+
+<hr />
+
+<div class="dd">
+
+<code>id</code>  <i>string</i>
+
+</div>
+<div class="dt">
+
+description: |
+ ID is request id in that protocol
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>init</code>  <i>string</i>
+
+</div>
+<div class="dt">
+
+Init is javascript code to execute after compiling template and before executing it on any target
+This is helpful for preparing payloads or other setup that maybe required for exploits
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>pre-condition</code>  <i>string</i>
+
+</div>
+<div class="dt">
+
+PreCondition is a condition which is evaluated before sending the request.
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>args</code>  <i>map[string]interface{}</i>
+
+</div>
+<div class="dt">
+
+Args contains the arguments to pass to the javascript code.
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>code</code>  <i>string</i>
+
+</div>
+<div class="dt">
+
+Code contains code to execute for the javascript request.
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>stop-at-first-match</code>  <i>bool</i>
+
+</div>
+<div class="dt">
+
+StopAtFirstMatch stops processing the request at first match.
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>attack</code>  <i><a href="#generatorsattacktypeholder">generators.AttackTypeHolder</a></i>
+
+</div>
+<div class="dt">
+
+Attack is the type of payload combinations to perform.
+
+Sniper is each payload once, pitchfork combines multiple payload sets and clusterbomb generates
+permutations and combinations for all payloads.
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>threads</code>  <i>int</i>
+
+</div>
+<div class="dt">
+
+Payload concurrency i.e threads for sending requests.
+
+
+
+Examples:
+
+
+```yaml
+# Send requests using 10 concurrent threads
+threads: 10
+```
+
+
+</div>
+
+<hr />
+
+<div class="dd">
+
+<code>payloads</code>  <i>map[string]interface{}</i>
+
+</div>
+<div class="dt">
+
+Payloads contains any payloads for the current request.
+
+Payloads support both key-values combinations where a list
+of payloads is provided, or optionally a single file can also
+be provided as payload which will be read on run-time.
 
 </div>
 
